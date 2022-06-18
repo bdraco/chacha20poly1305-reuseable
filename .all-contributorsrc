@@ -9,7 +9,19 @@
   "imageSize": 80,
   "commit": true,
   "commitConvention": "angular",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "bdraco",
+      "name": "J. Nick Koston",
+      "avatar_url": "https://avatars.githubusercontent.com/u/663432?v=4",
+      "profile": "https://github.com/bdraco",
+      "contributions": [
+        "code",
+        "ideas",
+        "doc"
+      ]
+    }
+  ],
   "contributorsPerLine": 7,
   "skipCi": true
 }
