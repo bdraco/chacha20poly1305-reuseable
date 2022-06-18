@@ -27,7 +27,7 @@ class TestChaCha20Poly1305Reusable:
         key = ChaCha20Poly1305Reusable.generate_key()
         assert len(key) == 32
 
-    def test_bad_key(self, backend):
+    def test_bad_key(self):
         with pytest.raises(TypeError):
             ChaCha20Poly1305Reusable(object())  # type:ignore[arg-type]
 
@@ -42,7 +42,7 @@ class TestChaCha20Poly1305Reusable:
             [b"0" * 12, b"data", object()],
         ],
     )
-    def test_params_not_bytes_encrypt(self, nonce, data, associated_data, backend):
+    def test_params_not_bytes_encrypt(self, nonce, data, associated_data):
         key = ChaCha20Poly1305Reusable.generate_key()
         chacha = ChaCha20Poly1305Reusable(key)
         with pytest.raises(TypeError):
@@ -51,7 +51,7 @@ class TestChaCha20Poly1305Reusable:
         with pytest.raises(TypeError):
             chacha.decrypt(nonce, data, associated_data)
 
-    def test_nonce_not_12_bytes(self, backend):
+    def test_nonce_not_12_bytes(self):
         key = ChaCha20Poly1305Reusable.generate_key()
         chacha = ChaCha20Poly1305Reusable(key)
         with pytest.raises(ValueError):
@@ -60,13 +60,13 @@ class TestChaCha20Poly1305Reusable:
         with pytest.raises(ValueError):
             chacha.decrypt(b"00", b"hello", b"")
 
-    def test_decrypt_data_too_short(self, backend):
+    def test_decrypt_data_too_short(self):
         key = ChaCha20Poly1305Reusable.generate_key()
         chacha = ChaCha20Poly1305Reusable(key)
         with pytest.raises(InvalidTag):
             chacha.decrypt(b"0" * 12, b"0", None)
 
-    def test_associated_data_none_equal_to_empty_bytestring(self, backend):
+    def test_associated_data_none_equal_to_empty_bytestring(self):
         key = ChaCha20Poly1305Reusable.generate_key()
         chacha = ChaCha20Poly1305Reusable(key)
         nonce = os.urandom(12)
@@ -77,7 +77,7 @@ class TestChaCha20Poly1305Reusable:
         pt2 = chacha.decrypt(nonce, ct2, b"")
         assert pt1 == pt2
 
-    def test_buffer_protocol(self, backend):
+    def test_buffer_protocol(self):
         key = ChaCha20Poly1305Reusable.generate_key()
         chacha = ChaCha20Poly1305Reusable(key)
         pt = b"encrypt me"

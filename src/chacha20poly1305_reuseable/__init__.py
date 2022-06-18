@@ -11,12 +11,13 @@ import typing
 from cryptography import exceptions, utils
 from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.backends.openssl.backend import backend
+from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 
 _ENCRYPT = 1
 _DECRYPT = 0
 
 
-class ChaCha20Poly1305Reusable:
+class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
     """A reuseable version of ChaCha20Poly1305.
 
     This is modified version of ChaCha20Poly1305 that does not recreate
