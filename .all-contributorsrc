@@ -1,0 +1,15 @@
+{
+  "projectName": "chacha20poly1305-reuseable",
+  "projectOwner": "bdraco",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 80,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [],
+  "contributorsPerLine": 7,
+  "skipCi": true
+}
