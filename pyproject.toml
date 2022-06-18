@@ -23,7 +23,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-cryptography = "^37.0.2"
+cryptography = "^36.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
