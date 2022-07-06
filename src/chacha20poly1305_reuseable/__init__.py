@@ -7,8 +7,9 @@ __version__ = "0.0.3"
 
 import os
 import typing
+from typing import Union
 
-from cryptography import exceptions, utils
+from cryptography import exceptions
 from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
@@ -32,13 +33,15 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
     _NONCE_LEN = 12
     _TAG_LENGTH = 16
 
-    def __init__(self, key: bytes):
+    def __init__(self, key: Union[bytes, bytearray]) -> None:
         if not backend.aead_cipher_supported(self):
             raise exceptions.UnsupportedAlgorithm(
                 "ChaCha20Poly1305Reusable is not supported by this version of OpenSSL",
                 exceptions._Reasons.UNSUPPORTED_CIPHER,
             )
-        utils._check_byteslike("key", key)
+
+        if not isinstance(key, (bytes, bytearray)):
+            raise TypeError("key must be bytes or bytearay")
 
         if len(key) != self._KEY_LEN:
             raise ValueError("ChaCha20Poly1305Reusable key must be 32 bytes.")
@@ -54,7 +57,7 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
 
     def encrypt(
         self,
-        nonce: bytes,
+        nonce: Union[bytes, bytearray],
         data: bytes,
         associated_data: typing.Optional[bytes],
     ) -> bytes:
@@ -84,7 +87,7 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
 
     def decrypt(
         self,
-        nonce: bytes,
+        nonce: Union[bytes, bytearray],
         data: bytes,
         associated_data: typing.Optional[bytes],
     ) -> bytes:
@@ -110,13 +113,16 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
 
     def _check_params(
         self,
-        nonce: bytes,
+        nonce: Union[bytes, bytearray],
         data: bytes,
         associated_data: bytes,
     ) -> None:
-        utils._check_byteslike("nonce", nonce)
-        utils._check_bytes("data", data)
-        utils._check_bytes("associated_data", associated_data)
+        if not isinstance(nonce, (bytes, bytearray)):
+            raise TypeError("Nonce must be bytes or bytearray")
+        if not isinstance(data, bytes):
+            raise TypeError("data must be bytes")
+        if not isinstance(associated_data, bytes):
+            raise TypeError("associated_data must be bytes")
         if len(nonce) != self._NONCE_LEN:
             raise ValueError("Nonce must be 12 bytes")
 
