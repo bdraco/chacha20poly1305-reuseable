@@ -7,7 +7,7 @@ __version__ = "0.0.4"
 
 import os
 import typing
-from typing import Union
+from typing import Optional, Union
 
 from cryptography import exceptions
 from cryptography.exceptions import InvalidTag
@@ -48,8 +48,8 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
 
         self._cipher_name = b"chacha20-poly1305"
         self._key = key
-        self._decrypt_ctx: object | None = None
-        self._encrypt_ctx: object | None = None
+        self._decrypt_ctx: Optional[object] = None
+        self._encrypt_ctx: Optional[object] = None
 
     @classmethod
     def generate_key(cls) -> bytes:
