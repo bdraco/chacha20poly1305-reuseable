@@ -52,7 +52,9 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: snok/install-poetry@v1
+          cache: "poetry"
+      - name: Install poetry
+        run: pipx install poetry
       - name: Install Dependencies
         run: poetry install
       - name: Test with Pytest
