@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.2 (2023-04-07)
+### Fix
+* More CI fixes ([#8](https://github.com/bdraco/chacha20poly1305-reuseable/issues/8)) ([`b47d7c7`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/b47d7c7d7af73e7f37e72a292230d75ffcede008))
+* More CI fixes ([#7](https://github.com/bdraco/chacha20poly1305-reuseable/issues/7)) ([`c79e97a`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/c79e97ae7761201cb22c9f0bab5998551a914d74))
+
 ## v0.2.1 (2023-04-07)
 ### Fix
 * Rebuild to fix CI ([#6](https://github.com/bdraco/chacha20poly1305-reuseable/issues/6)) ([`1c109e5`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/1c109e5a7233756f961fe7febaf02283c81bd297))
