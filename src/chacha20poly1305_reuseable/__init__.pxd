@@ -26,6 +26,13 @@ cdef object ffi_new
 cdef object ffi_from_buffer
 cdef object ffi_buffer
 
+cdef _check_params(
+    object nonce_len,
+    object nonce,
+    object data,
+    object associated_data
+)
+
 cdef _create_ctx()
 
 

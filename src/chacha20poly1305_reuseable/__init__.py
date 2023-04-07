@@ -40,6 +40,22 @@ _DECRYPT = 0
 _bytes = bytes
 
 
+def _check_params(
+    nonce_len: int,
+    nonce: Union[_bytes, bytearray],
+    data: _bytes,
+    associated_data: _bytes,
+) -> None:
+    if not isinstance(nonce, (bytes, bytearray)):
+        raise TypeError("Nonce must be bytes or bytearray")
+    if not isinstance(data, bytes):
+        raise TypeError("data must be bytes")
+    if not isinstance(associated_data, bytes):
+        raise TypeError("associated_data must be bytes")
+    if len(nonce) != nonce_len:
+        raise ValueError("Nonce must be 12 bytes")
+
+
 class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
     """A reuseable version of ChaCha20Poly1305.
 
@@ -98,7 +114,7 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
             # This is OverflowError to match what cffi would raise
             raise OverflowError("Data or associated data too long. Max 2**32 bytes")
 
-        self._check_params(nonce, data, associated_data)
+        _check_params(self._NONCE_LEN, nonce, data, associated_data)
         return _encrypt_with_fixed_nonce_len(
             self._encrypt_ctx,
             nonce,
@@ -124,7 +140,7 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         if associated_data is None:
             associated_data = b""
 
-        self._check_params(nonce, data, associated_data)
+        _check_params(self._NONCE_LEN, nonce, data, associated_data)
         return _decrypt_with_fixed_nonce_len(
             self._decrypt_ctx,
             nonce,
@@ -132,21 +148,6 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
             associated_data,
             self._TAG_LENGTH,
         )
-
-    def _check_params(
-        self,
-        nonce: Union[_bytes, bytearray],
-        data: _bytes,
-        associated_data: _bytes,
-    ) -> None:
-        if not isinstance(nonce, (bytes, bytearray)):
-            raise TypeError("Nonce must be bytes or bytearray")
-        if not isinstance(data, bytes):
-            raise TypeError("data must be bytes")
-        if not isinstance(associated_data, bytes):
-            raise TypeError("associated_data must be bytes")
-        if len(nonce) != self._NONCE_LEN:
-            raise ValueError("Nonce must be 12 bytes")
 
 
 def _create_ctx() -> object:
