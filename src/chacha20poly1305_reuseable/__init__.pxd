@@ -2,8 +2,8 @@
 import cython
 
 
-cdef cython.uint _ENCRYPT
-cdef cython.uint _DECRYPT
+cdef object _ENCRYPT
+cdef object _DECRYPT
 
 cdef object InvalidTag
 cdef object openssl_assert
@@ -36,19 +36,19 @@ cdef _check_params(
 cdef _create_ctx()
 
 
-cdef _set_cipher(object ctx, object cipher_name, cython.uint operation)
+cdef _set_cipher(object ctx, object cipher_name, object operation)
 
-cdef _set_key_len(object ctx, cython.uint key_len)
+cdef _set_key_len(object ctx, object key_len)
 
-cdef _set_key(object ctx, object key, cython.uint operation)
+cdef _set_key(object ctx, object key, object operation)
 
 cdef _set_decrypt_tag(object ctx, object tag)
 
-cdef _set_nonce_len(object ctx, cython.uint nonce_len)
+cdef _set_nonce_len(object ctx, object nonce_len)
 
-cdef _set_nonce(object ctx, object nonce, cython.uint operation)
+cdef _set_nonce(object ctx, object nonce, object operation)
 
-cdef _aead_setup_with_fixed_nonce_len(object cipher_name, object key, cython.uint nonce_len, cython.uint operation)
+cdef _aead_setup_with_fixed_nonce_len(object cipher_name, object key, object nonce_len, object operation)
 
 cdef _process_aad(object ctx, object associated_data)
 
@@ -57,30 +57,30 @@ cdef _process_data(object ctx, object data)
 cdef _encrypt_with_fixed_nonce_len(
     object ctx,
     object nonce,
-    cython.bytes data,
-    cython.bytes associated_data,
-    cython.uint tag_length,
+    object data,
+    object associated_data,
+    object tag_length,
 )
 
 cdef _encrypt_data(
     object ctx,
-    cython.bytes data,
-    cython.bytes associated_data,
-    cython.uint tag_length
+    object data,
+    object associated_data,
+    object tag_length
 )
 
-cdef _tag_from_data(cython.bytes data, cython.uint tag_length)
+cdef _tag_from_data(object data, object tag_length)
 
 cdef _decrypt_with_fixed_nonce_len(
     object ctx,
     object nonce,
-    cython.bytes data,
-    cython.bytes associated_data,
-    cython.uint tag_length
+    object data,
+    object associated_data,
+    object tag_length
 )
 
 cdef _decrypt_data(
     object ctx,
-    cython.bytes data,
-    cython.bytes associated_data
+    object data,
+    object associated_data
 )
