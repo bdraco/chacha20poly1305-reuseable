@@ -120,7 +120,7 @@ jobs:
         uses: actions/setup-python@v4
 
       - name: Install python-semantic-release
-        run: python -m pip install python-semantic-release
+        run: python3 -m pip install python-semantic-release
 
       - name: Get Release Tag
         id: release_tag
