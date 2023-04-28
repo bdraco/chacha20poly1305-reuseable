@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.3 (2023-04-28)
+### Fix
+* Rebuild wheels with newer ciwheelbuild ([#10](https://github.com/bdraco/chacha20poly1305-reuseable/issues/10)) ([`73e543a`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/73e543a7a2bd4648a879cd0c3c9206328d87338d))
+
 ## v0.2.2 (2023-04-07)
 ### Fix
 * More CI fixes ([#8](https://github.com/bdraco/chacha20poly1305-reuseable/issues/8)) ([`b47d7c7`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/b47d7c7d7af73e7f37e72a292230d75ffcede008))
