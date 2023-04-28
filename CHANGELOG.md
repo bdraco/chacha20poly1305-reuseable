@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.5 (2023-04-28)
+### Fix
+* Force utf-8 for build ([#12](https://github.com/bdraco/chacha20poly1305-reuseable/issues/12)) ([`e62972e`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/e62972ebf83d8576a54cd38a65b988e81ef299c7))
+
 ## v0.2.4 (2023-04-28)
 ### Fix
 * Bump deps to fix CI build ([#11](https://github.com/bdraco/chacha20poly1305-reuseable/issues/11)) ([`6894b4d`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/6894b4d33dd62e46beb5e4d0da2ebc8981b50e7d))
