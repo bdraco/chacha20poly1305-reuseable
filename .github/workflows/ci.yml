@@ -127,6 +127,8 @@ jobs:
 
       - name: Get Release Tag
         id: release_tag
+        env:
+          PYTHONUTF8: 1
         shell: bash
         run: |
           echo "::set-output name=newest_release_tag::$(semantic-release print-version --current)"
