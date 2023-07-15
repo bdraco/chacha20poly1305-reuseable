@@ -57,6 +57,14 @@ def _check_params(
         raise ValueError("Nonce must be 12 bytes")
 
 
+MAX_SIZE = 2**32
+KEY_LEN = 32
+NONCE_LEN = 12
+NONCE_LEN_UINT = NONCE_LEN
+TAG_LENGTH = 16
+CIPHER_NAME = b"chacha20-poly1305"
+
+
 class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
     """A reuseable version of ChaCha20Poly1305.
 
@@ -67,10 +75,10 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
     The primary use case for this code is HAP streams.
     """
 
-    _MAX_SIZE = 2**32
-    _KEY_LEN = 32
-    _NONCE_LEN = 12
-    _TAG_LENGTH = 16
+    _MAX_SIZE = MAX_SIZE
+    _KEY_LEN = KEY_LEN
+    _NONCE_LEN = NONCE_LEN
+    _TAG_LENGTH = TAG_LENGTH
 
     def __init__(self, key: Union[_bytes, bytearray]) -> None:
         if not backend.aead_cipher_supported(self):
@@ -82,10 +90,10 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         if not isinstance(key, (bytes, bytearray)):
             raise TypeError("key must be bytes or bytearay")
 
-        if len(key) != self._KEY_LEN:
+        if len(key) != KEY_LEN:
             raise ValueError("ChaCha20Poly1305Reusable key must be 32 bytes.")
 
-        self._cipher_name = b"chacha20-poly1305"
+        self._cipher_name = CIPHER_NAME
         self._key = key
         self._decrypt_ctx: Optional[object] = None
         self._encrypt_ctx: Optional[object] = None
@@ -100,28 +108,30 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         data: _bytes,
         associated_data: typing.Optional[bytes],
     ) -> bytes:
-        if not self._encrypt_ctx:
+        encrypt_ctx = self._encrypt_ctx
+        if encrypt_ctx:
             self._encrypt_ctx = _aead_setup_with_fixed_nonce_len(
-                self._cipher_name,
+                CIPHER_NAME,
                 self._key,
-                self._NONCE_LEN,
+                NONCE_LEN,
                 _ENCRYPT,
             )
+            encrypt_ctx = self._encrypt_ctx
 
         if associated_data is None:
             associated_data = b""
 
-        if len(data) > self._MAX_SIZE or len(associated_data) > self._MAX_SIZE:
+        if len(data) > MAX_SIZE or len(associated_data) > MAX_SIZE:
             # This is OverflowError to match what cffi would raise
             raise OverflowError("Data or associated data too long. Max 2**32 bytes")
 
-        _check_params(self._NONCE_LEN, nonce, data, associated_data)
+        _check_params(NONCE_LEN_UINT, nonce, data, associated_data)
         return _encrypt_with_fixed_nonce_len(
-            self._encrypt_ctx,
+            encrypt_ctx,
             nonce,
             data,
             associated_data,
-            self._TAG_LENGTH,
+            TAG_LENGTH,
         )
 
     def decrypt(
@@ -130,24 +140,26 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         data: _bytes,
         associated_data: typing.Optional[_bytes],
     ) -> bytes:
-        if not self._decrypt_ctx:
+        decrypt_ctx = self._decrypt_ctx
+        if not decrypt_ctx:
             self._decrypt_ctx = _aead_setup_with_fixed_nonce_len(
-                self._cipher_name,
+                CIPHER_NAME,
                 self._key,
-                self._NONCE_LEN,
+                NONCE_LEN,
                 _DECRYPT,
             )
+            decrypt_ctx = self._decrypt_ctx
 
         if associated_data is None:
             associated_data = b""
 
-        _check_params(self._NONCE_LEN, nonce, data, associated_data)
+        _check_params(NONCE_LEN_UINT, nonce, data, associated_data)
         return _decrypt_with_fixed_nonce_len(
-            self._decrypt_ctx,
+            decrypt_ctx,
             nonce,
             data,
             associated_data,
-            self._TAG_LENGTH,
+            TAG_LENGTH,
         )
 
 

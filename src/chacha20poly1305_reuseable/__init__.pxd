@@ -26,8 +26,15 @@ cdef object ffi_new
 cdef object ffi_from_buffer
 cdef object ffi_buffer
 
+cdef object MAX_SIZE
+cdef object KEY_LEN
+cdef object NONCE_LEN
+cdef cython.uint NONCE_LEN_UINT
+cdef object TAG_LENGTH
+cdef object CIPHER_NAME
+
 cdef _check_params(
-    object nonce_len,
+    cython.uint nonce_len,
     object nonce,
     object data,
     object associated_data
