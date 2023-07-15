@@ -5,6 +5,9 @@ import cython
 cdef object _ENCRYPT
 cdef object _DECRYPT
 
+cdef object lib
+cdef object ffi
+
 cdef object InvalidTag
 cdef object openssl_failure
 cdef object NULL

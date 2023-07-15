@@ -16,24 +16,27 @@ from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 
 openssl_failure = partial(backend.openssl_assert, False)
-EVP_CIPHER_CTX_ctrl = backend._lib.EVP_CIPHER_CTX_ctrl
-EVP_CTRL_AEAD_SET_TAG = backend._lib.EVP_CTRL_AEAD_SET_TAG
-EVP_CTRL_AEAD_SET_IVLEN = backend._lib.EVP_CTRL_AEAD_SET_IVLEN
-EVP_CipherInit_ex = backend._lib.EVP_CipherInit_ex
-EVP_CIPHER_CTX_new = backend._lib.EVP_CIPHER_CTX_new
-EVP_CIPHER_CTX_free = backend._lib.EVP_CIPHER_CTX_free
-EVP_get_cipherbyname = backend._lib.EVP_get_cipherbyname
-EVP_CIPHER_CTX_set_key_length = backend._lib.EVP_CIPHER_CTX_set_key_length
-EVP_CipherUpdate = backend._lib.EVP_CipherUpdate
-EVP_CipherFinal_ex = backend._lib.EVP_CipherFinal_ex
-EVP_CTRL_AEAD_GET_TAG = backend._lib.EVP_CTRL_AEAD_GET_TAG
+lib = backend._lib
+ffi = backend._ffi
 
-ffi_from_buffer = backend._ffi.from_buffer
-ffi_gc = backend._ffi.gc
-ffi_new = backend._ffi.new
-ffi_buffer = backend._ffi.buffer
+EVP_CIPHER_CTX_ctrl = lib.EVP_CIPHER_CTX_ctrl
+EVP_CTRL_AEAD_SET_TAG = lib.EVP_CTRL_AEAD_SET_TAG
+EVP_CTRL_AEAD_SET_IVLEN = lib.EVP_CTRL_AEAD_SET_IVLEN
+EVP_CipherInit_ex = lib.EVP_CipherInit_ex
+EVP_CIPHER_CTX_new = lib.EVP_CIPHER_CTX_new
+EVP_CIPHER_CTX_free = lib.EVP_CIPHER_CTX_free
+EVP_get_cipherbyname = lib.EVP_get_cipherbyname
+EVP_CIPHER_CTX_set_key_length = lib.EVP_CIPHER_CTX_set_key_length
+EVP_CipherUpdate = lib.EVP_CipherUpdate
+EVP_CipherFinal_ex = lib.EVP_CipherFinal_ex
+EVP_CTRL_AEAD_GET_TAG = lib.EVP_CTRL_AEAD_GET_TAG
 
-NULL = backend._ffi.NULL
+ffi_from_buffer = ffi.from_buffer
+ffi_gc = ffi.gc
+ffi_new = ffi.new
+ffi_buffer = ffi.buffer
+
+NULL = ffi.NULL
 
 _ENCRYPT = 1
 _DECRYPT = 0
@@ -88,7 +91,6 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         if len(key) != KEY_LEN:
             raise ValueError("ChaCha20Poly1305Reusable key must be 32 bytes.")
 
-        self._cipher_name = CIPHER_NAME
         self._key = key
         self._decrypt_ctx: Optional[object] = None
         self._encrypt_ctx: Optional[object] = None
