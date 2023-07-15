@@ -59,6 +59,8 @@ cdef _encrypt_with_fixed_nonce_len(
     object tag_length,
 )
 
+cdef _openssl_assert(int ok)
+
 cdef _encrypt_data(
     object ctx,
     object data,
