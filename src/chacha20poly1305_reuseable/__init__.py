@@ -78,8 +78,6 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
     The primary use case for this code is HAP streams.
     """
 
-    _KEY_LEN = KEY_LEN
-
     def __init__(self, key: Union[_bytes, bytearray]) -> None:
         if not backend.aead_cipher_supported(self):
             raise exceptions.UnsupportedAlgorithm(
@@ -108,14 +106,14 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         associated_data: typing.Optional[bytes],
     ) -> bytes:
         encrypt_ctx = self._encrypt_ctx
-        if encrypt_ctx:
-            self._encrypt_ctx = _aead_setup_with_fixed_nonce_len(
+        if not encrypt_ctx:
+            encrypt_ctx = _aead_setup_with_fixed_nonce_len(
                 CIPHER_NAME,
                 self._key,
                 NONCE_LEN,
                 _ENCRYPT,
             )
-            encrypt_ctx = self._encrypt_ctx
+            self._encrypt_ctx = encrypt_ctx
 
         if associated_data is None:
             associated_data = b""
@@ -141,13 +139,13 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
     ) -> bytes:
         decrypt_ctx = self._decrypt_ctx
         if not decrypt_ctx:
-            self._decrypt_ctx = _aead_setup_with_fixed_nonce_len(
+            decrypt_ctx = _aead_setup_with_fixed_nonce_len(
                 CIPHER_NAME,
                 self._key,
                 NONCE_LEN,
                 _DECRYPT,
             )
-            decrypt_ctx = self._decrypt_ctx
+            self._decrypt_ctx = decrypt_ctx
 
         if associated_data is None:
             associated_data = b""
