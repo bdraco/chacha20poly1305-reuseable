@@ -75,11 +75,6 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
     The primary use case for this code is HAP streams.
     """
 
-    _MAX_SIZE = MAX_SIZE
-    _KEY_LEN = KEY_LEN
-    _NONCE_LEN = NONCE_LEN
-    _TAG_LENGTH = TAG_LENGTH
-
     def __init__(self, key: Union[_bytes, bytearray]) -> None:
         if not backend.aead_cipher_supported(self):
             raise exceptions.UnsupportedAlgorithm(
