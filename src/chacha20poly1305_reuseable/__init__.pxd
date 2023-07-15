@@ -6,7 +6,7 @@ cdef object _ENCRYPT
 cdef object _DECRYPT
 
 cdef object InvalidTag
-cdef object openssl_assert
+cdef object openssl_failure
 cdef object NULL
 
 cdef object EVP_CIPHER_CTX_ctrl
@@ -33,19 +33,6 @@ cdef _check_params(
     object associated_data
 )
 
-cdef _create_ctx()
-
-
-cdef _set_cipher(object ctx, object cipher_name, object operation)
-
-cdef _set_key_len(object ctx, object key_len)
-
-cdef _set_key(object ctx, object key, object operation)
-
-cdef _set_decrypt_tag(object ctx, object tag)
-
-cdef _set_nonce_len(object ctx, object nonce_len)
-
 cdef _set_nonce(object ctx, object nonce, object operation)
 
 cdef _aead_setup_with_fixed_nonce_len(object cipher_name, object key, object nonce_len, object operation)
@@ -68,8 +55,6 @@ cdef _encrypt_data(
     object associated_data,
     object tag_length
 )
-
-cdef _tag_from_data(object data, object tag_length)
 
 cdef _decrypt_with_fixed_nonce_len(
     object ctx,

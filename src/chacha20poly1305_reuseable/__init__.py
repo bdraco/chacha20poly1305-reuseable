@@ -7,6 +7,7 @@ __version__ = "0.2.5"
 
 import os
 import typing
+from functools import partial
 from typing import Optional, Union
 
 from cryptography import exceptions
@@ -14,7 +15,7 @@ from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 
-openssl_assert = backend.openssl_assert
+openssl_failure = partial(backend.openssl_assert, False)
 EVP_CIPHER_CTX_ctrl = backend._lib.EVP_CIPHER_CTX_ctrl
 EVP_CTRL_AEAD_SET_TAG = backend._lib.EVP_CTRL_AEAD_SET_TAG
 EVP_CTRL_AEAD_SET_IVLEN = backend._lib.EVP_CTRL_AEAD_SET_IVLEN
@@ -150,94 +151,85 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         )
 
 
-def _create_ctx() -> object:
-    ctx = EVP_CIPHER_CTX_new()
-    ctx = ffi_gc(ctx, EVP_CIPHER_CTX_free)
-    return ctx
-
-
-def _set_cipher(ctx: object, cipher_name: _bytes, operation: int) -> None:
-    evp_cipher = EVP_get_cipherbyname(cipher_name)
-    openssl_assert(evp_cipher != NULL)
-    res = EVP_CipherInit_ex(
-        ctx,
-        evp_cipher,
-        NULL,
-        NULL,
-        NULL,
-        int(operation == _ENCRYPT),
-    )
-    openssl_assert(res != 0)
-
-
-def _set_key_len(ctx: object, key_len: int) -> None:
-    res = EVP_CIPHER_CTX_set_key_length(ctx, key_len)
-    openssl_assert(res != 0)
-
-
-def _set_key(ctx: object, key: _bytes, operation: int) -> None:
-    key_ptr = ffi_from_buffer(key)
-    res = EVP_CipherInit_ex(
-        ctx,
-        NULL,
-        NULL,
-        key_ptr,
-        NULL,
-        int(operation == _ENCRYPT),
-    )
-    openssl_assert(res != 0)
-
-
-def _set_decrypt_tag(ctx: object, tag: _bytes) -> None:
-    res = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, len(tag), tag)
-    openssl_assert(res != 0)
-
-
-def _set_nonce_len(ctx: object, nonce_len: int) -> None:
-    res = EVP_CIPHER_CTX_ctrl(
-        ctx,
-        EVP_CTRL_AEAD_SET_IVLEN,
-        nonce_len,
-        NULL,
-    )
-    openssl_assert(res != 0)
-
-
 def _set_nonce(ctx: object, nonce: Union[_bytes, bytearray], operation: int) -> None:
     nonce_ptr = ffi_from_buffer(nonce)
-    res = EVP_CipherInit_ex(
-        ctx,
-        NULL,
-        NULL,
-        NULL,
-        nonce_ptr,
-        int(operation == _ENCRYPT),
-    )
-    openssl_assert(res != 0)
+    if (
+        EVP_CipherInit_ex(
+            ctx,
+            NULL,
+            NULL,
+            NULL,
+            nonce_ptr,
+            int(operation == _ENCRYPT),
+        )
+        == 0
+    ):
+        openssl_failure()
 
 
 def _aead_setup_with_fixed_nonce_len(
     cipher_name: _bytes, key: Union[_bytes, bytearray], nonce_len: int, operation: int
 ) -> object:
-    ctx = _create_ctx()
-    _set_cipher(ctx, cipher_name, operation)
-    _set_key_len(ctx, len(key))
-    _set_key(ctx, key, operation)
-    _set_nonce_len(ctx, nonce_len)
+    # create the ctx
+    ctx = EVP_CIPHER_CTX_new()
+    ctx = ffi_gc(ctx, EVP_CIPHER_CTX_free)
+    # set the cipher
+    evp_cipher = EVP_get_cipherbyname(cipher_name)
+    if evp_cipher == NULL:
+        openssl_failure()
+    if (
+        EVP_CipherInit_ex(
+            ctx,
+            evp_cipher,
+            NULL,
+            NULL,
+            NULL,
+            int(operation == _ENCRYPT),
+        )
+        == 0
+    ):
+        openssl_failure()
+    # Set the key length
+    if EVP_CIPHER_CTX_set_key_length(ctx, len(key)) == 0:
+        openssl_failure()
+    # Set the key
+    if (
+        EVP_CipherInit_ex(
+            ctx,
+            NULL,
+            NULL,
+            ffi_from_buffer(key),
+            NULL,
+            int(operation == _ENCRYPT),
+        )
+        == 0
+    ):
+        openssl_failure()
+    # set nonce length
+    if (
+        EVP_CIPHER_CTX_ctrl(
+            ctx,
+            EVP_CTRL_AEAD_SET_IVLEN,
+            nonce_len,
+            NULL,
+        )
+        == 0
+    ):
+        openssl_failure()
     return ctx
 
 
 def _process_aad(ctx: object, associated_data: _bytes) -> None:
     outlen = ffi_new("int *")
-    res = EVP_CipherUpdate(ctx, NULL, outlen, associated_data, len(associated_data))
-    openssl_assert(res != 0)
+    if EVP_CipherUpdate(ctx, NULL, outlen, associated_data, len(associated_data)) == 0:
+        openssl_failure()
 
 
 def _process_data(ctx: object, data: _bytes) -> _bytes:
     outlen = ffi_new("int *")
     buf = ffi_new("unsigned char[]", len(data))
-    res = EVP_CipherUpdate(ctx, buf, outlen, data, len(data))
-    openssl_assert(res != 0)
+    if EVP_CipherUpdate(ctx, buf, outlen, data, len(data)) == 0:
+        openssl_failure()
     return ffi_buffer(buf, outlen[0])[:]
 
 
@@ -258,21 +250,16 @@ def _encrypt_data(
     _process_aad(ctx, associated_data)
     processed_data = _process_data(ctx, data)
     outlen = ffi_new("int *")
-    res = EVP_CipherFinal_ex(ctx, NULL, outlen)
-    openssl_assert(res != 0)
-    openssl_assert(outlen[0] == 0)
+    if EVP_CipherFinal_ex(ctx, NULL, outlen) == 0:
+        openssl_failure()
+    if outlen[0] != 0:
+        openssl_failure()
     tag_buf = ffi_new("unsigned char[]", tag_length)
-    res = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, tag_length, tag_buf)
-    openssl_assert(res != 0)
+    if EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, tag_length, tag_buf) == 0:
+        openssl_failure()
     tag = ffi_buffer(tag_buf)[:]
 
     return processed_data + tag
-
-
-def _tag_from_data(data: _bytes, tag_length: int) -> _bytes:
-    if len(data) < tag_length:
-        raise InvalidTag
-    return data[-tag_length:]
 
 
 def _decrypt_with_fixed_nonce_len(
@@ -282,10 +269,14 @@ def _decrypt_with_fixed_nonce_len(
     associated_data: _bytes,
     tag_length: int,
 ) -> bytes:
-    tag = _tag_from_data(data, tag_length)
+    if len(data) < tag_length:
+        raise InvalidTag
+    tag = data[-tag_length:]
     data = data[:-tag_length]
     _set_nonce(ctx, nonce, _DECRYPT)
-    _set_decrypt_tag(ctx, tag)
+    # set the decrypted tag
+    if EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, len(tag), tag) == 0:
+        openssl_failure()
     return _decrypt_data(ctx, data, associated_data)
 
 
