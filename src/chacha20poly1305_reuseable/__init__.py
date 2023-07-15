@@ -97,7 +97,7 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
 
     @classmethod
     def generate_key(cls) -> _bytes:
-        return os.urandom(ChaCha20Poly1305Reusable._KEY_LEN)
+        return os.urandom(KEY_LEN)
 
     def encrypt(
         self,
