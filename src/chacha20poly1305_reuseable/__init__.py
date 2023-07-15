@@ -234,8 +234,9 @@ def _process_aad(ctx: object, associated_data: _bytes) -> None:
 
 def _process_data(ctx: object, data: _bytes) -> _bytes:
     outlen = ffi_new("int *")
-    buf = ffi_new("unsigned char[]", len(data))
-    if EVP_CipherUpdate(ctx, buf, outlen, data, len(data)) == 0:
+    data_len = len(data)
+    buf = ffi_new("unsigned char[]", data_len)
+    if EVP_CipherUpdate(ctx, buf, outlen, data, data_len) == 0:
         openssl_failure()
     return ffi_buffer(buf, outlen[0])[:]
 
@@ -278,11 +279,12 @@ def _decrypt_with_fixed_nonce_len(
 ) -> bytes:
     if len(data) < tag_length:
         raise InvalidTag
-    tag = data[-tag_length:]
-    data = data[:-tag_length]
+    negative_tag_length = -tag_length
+    tag = data[negative_tag_length:]
+    data = data[:negative_tag_length]
     _set_nonce(ctx, nonce, _DECRYPT)
     # set the decrypted tag
-    if EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, len(tag), tag) == 0:
+    if EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, tag_length, tag) == 0:
         openssl_failure()
     return _decrypt_data(ctx, data, associated_data)
 
