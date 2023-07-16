@@ -170,7 +170,7 @@ def _set_nonce(ctx: object, nonce: Union[_bytes, bytearray], operation: int) -> 
         nonce_ptr,
         int(operation == _ENCRYPT),
     )
-    _openssl_assert(ret != 0)
+    openssl_assert(ret != 0)
 
 
 def _aead_setup_with_fixed_nonce_len(
@@ -181,7 +181,7 @@ def _aead_setup_with_fixed_nonce_len(
     ctx = ffi_gc(ctx, EVP_CIPHER_CTX_free)
     # set the cipher
     evp_cipher = EVP_get_cipherbyname(cipher_name)
-    _openssl_assert(evp_cipher != NULL)
+    openssl_assert(evp_cipher != NULL)
     ret = EVP_CipherInit_ex(
         ctx,
         evp_cipher,
@@ -190,10 +190,10 @@ def _aead_setup_with_fixed_nonce_len(
         NULL,
         int(operation == _ENCRYPT),
     )
-    _openssl_assert(ret != 0)
+    openssl_assert(ret != 0)
     # Set the key length
     ret = EVP_CIPHER_CTX_set_key_length(ctx, len(key))
-    _openssl_assert(ret != 0)
+    openssl_assert(ret != 0)
     # Set the key
     ret = EVP_CipherInit_ex(
         ctx,
@@ -203,7 +203,7 @@ def _aead_setup_with_fixed_nonce_len(
         NULL,
         int(operation == _ENCRYPT),
     )
-    _openssl_assert(ret != 0)
+    openssl_assert(ret != 0)
     # set nonce length
     ret = EVP_CIPHER_CTX_ctrl(
         ctx,
@@ -211,14 +211,14 @@ def _aead_setup_with_fixed_nonce_len(
         nonce_len,
         NULL,
     )
-    _openssl_assert(ret != 0)
+    openssl_assert(ret != 0)
     return ctx
 
 
 def _process_aad(ctx: object, associated_data: _bytes) -> None:
     outlen = ffi_new("int *")
     ret = EVP_CipherUpdate(ctx, NULL, outlen, associated_data, len(associated_data))
-    _openssl_assert(ret != 0)
+    openssl_assert(ret != 0)
 
 
 def _process_data(ctx: object, data: _bytes) -> _bytes:
@@ -226,7 +226,7 @@ def _process_data(ctx: object, data: _bytes) -> _bytes:
     data_len = len(data)
     buf = ffi_new("unsigned char[]", data_len)
     ret = EVP_CipherUpdate(ctx, buf, outlen, data, data_len)
-    _openssl_assert(ret != 0)
+    openssl_assert(ret != 0)
     return ffi_buffer(buf, outlen[0])[:]
 
 
@@ -248,11 +248,11 @@ def _encrypt_data(
     processed_data = _process_data(ctx, data)
     outlen = ffi_new("int *")
     ret = EVP_CipherFinal_ex(ctx, NULL, outlen)
-    _openssl_assert(ret != 0)
-    _openssl_assert(outlen[0] == 0)
+    openssl_assert(ret != 0)
+    openssl_assert(outlen[0] == 0)
     tag_buf = ffi_new("unsigned char[]", tag_length)
     ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, tag_length, tag_buf)
-    _openssl_assert(ret != 0)
+    openssl_assert(ret != 0)
     tag = ffi_buffer(tag_buf)[:]
     return processed_data + tag
 
@@ -272,7 +272,7 @@ def _decrypt_with_fixed_nonce_len(
     _set_nonce(ctx, nonce, _DECRYPT)
     # set the decrypted tag
     ret = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, tag_length, tag)
-    _openssl_assert(ret != 0)
+    openssl_assert(ret != 0)
     return _decrypt_data(ctx, data, associated_data)
 
 
@@ -288,7 +288,7 @@ def _decrypt_data(ctx: object, data: _bytes, associated_data: _bytes) -> _bytes:
     return processed_data
 
 
-def _openssl_assert(ok: bool) -> None:
+def openssl_assert(ok: bool) -> None:
     """Raise an exception if OpenSSL returns an error."""
     if not ok:
         openssl_failure()
