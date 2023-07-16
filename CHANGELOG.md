@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2023-07-16)
+
+### Feature
+
+* Speed up implementation ([#14](https://github.com/bdraco/chacha20poly1305-reuseable/issues/14)) ([`c9cd330`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/c9cd330efe31f5719a3e54f6de38585cc5600486))
+
 ## v0.2.5 (2023-04-28)
 ### Fix
 * Force utf-8 for build ([#12](https://github.com/bdraco/chacha20poly1305-reuseable/issues/12)) ([`e62972e`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/e62972ebf83d8576a54cd38a65b988e81ef299c7))
