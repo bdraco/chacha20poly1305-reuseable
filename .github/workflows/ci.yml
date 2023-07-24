@@ -41,6 +41,7 @@ jobs:
           - "3.9"
           - "3.10"
           - "3.11"
+          - "3.12.0-beta.4"
         os:
           - ubuntu-latest
           - macOS-latest
@@ -48,6 +49,9 @@ jobs:
         extension:
           - "skip_cython"
           - "use_cython"
+        exclude:
+          - os: windows-latest
+            python-version: "3.12.0-beta.4"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -123,7 +127,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install python-semantic-release
-        run: python3 -m pip install --upgrade python-semantic-release requests
+        run: python3 -m pip install --upgrade python-semantic-release==7.34.6 requests
 
       - name: Get Release Tag
         id: release_tag
@@ -139,7 +143,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install cibuildwheel
-        run: python3 -m pip install cibuildwheel==2.12.3
+        run: python3 -m pip install cibuildwheel==2.14.1
 
       - name: Build wheels
         run: python3 -m cibuildwheel --output-dir wheelhouse
