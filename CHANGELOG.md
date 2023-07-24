@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.0 (2023-07-24)
+
+### Feature
+
+* Initial cpython 3.12 support ([#15](https://github.com/bdraco/chacha20poly1305-reuseable/issues/15)) ([`4187052`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/41870523eb8e55d476f8dd11b0d405125a4c086b))
+
 ## v0.3.0 (2023-07-16)
 
 ### Feature
