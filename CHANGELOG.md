@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2023-07-24)
+
+### Fix
+
+* Cython 3 compat ([#16](https://github.com/bdraco/chacha20poly1305-reuseable/issues/16)) ([`41165b4`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/41165b4be3c5768f68124b484afd23c83557c5d8))
+
 ## v0.4.0 (2023-07-24)
 
 ### Feature
