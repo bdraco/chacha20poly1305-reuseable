@@ -42,10 +42,11 @@ _ENCRYPT = 1
 _DECRYPT = 0
 
 _bytes = bytes
+_int = int
 
 
 def _check_params(
-    nonce_len: int,
+    nonce_len: _int,
     nonce: Union[_bytes, bytearray],
     data: _bytes,
     associated_data: _bytes,
@@ -160,7 +161,7 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         )
 
 
-def _set_nonce(ctx: object, nonce: Union[_bytes, bytearray], operation: int) -> None:
+def _set_nonce(ctx: object, nonce: Union[_bytes, bytearray], operation: _int) -> None:
     nonce_ptr = ffi_from_buffer(nonce)
     res = EVP_CipherInit_ex(
         ctx,
@@ -174,7 +175,7 @@ def _set_nonce(ctx: object, nonce: Union[_bytes, bytearray], operation: int) -> 
 
 
 def _aead_setup_with_fixed_nonce_len(
-    cipher_name: _bytes, key: Union[_bytes, bytearray], nonce_len: int, operation: int
+    cipher_name: _bytes, key: Union[_bytes, bytearray], nonce_len: _int, operation: _int
 ) -> object:
     # create the ctx
     ctx = EVP_CIPHER_CTX_new()
@@ -235,14 +236,14 @@ def _encrypt_with_fixed_nonce_len(
     nonce: Union[_bytes, bytearray],
     data: _bytes,
     associated_data: _bytes,
-    tag_length: int,
+    tag_length: _int,
 ) -> bytes:
     _set_nonce(ctx, nonce, _ENCRYPT)
     return _encrypt_data(ctx, data, associated_data, tag_length)
 
 
 def _encrypt_data(
-    ctx: object, data: _bytes, associated_data: _bytes, tag_length: int
+    ctx: object, data: _bytes, associated_data: _bytes, tag_length: _int
 ) -> bytes:
     _process_aad(ctx, associated_data)
     processed_data = _process_data(ctx, data)
@@ -262,7 +263,7 @@ def _decrypt_with_fixed_nonce_len(
     nonce: Union[_bytes, bytearray],
     data: _bytes,
     associated_data: _bytes,
-    tag_length: int,
+    tag_length: _int,
 ) -> bytes:
     if len(data) < tag_length:
         raise InvalidTag
