@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.2 (2023-08-27)
+
+### Fix
+
+* Rebuild wheels with cython 3.0.2 ([#17](https://github.com/bdraco/chacha20poly1305-reuseable/issues/17)) ([`2876c98`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/2876c9856f719059c73b618b90902c15342a5ba2))
+
 ## v0.4.1 (2023-07-24)
 
 ### Fix
