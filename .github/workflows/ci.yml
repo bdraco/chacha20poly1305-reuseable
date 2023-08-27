@@ -36,12 +36,11 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - "3.7"
           - "3.8"
           - "3.9"
           - "3.10"
           - "3.11"
-          - "3.12.0-beta.4"
+          - "3.12.0-rc.1"
         os:
           - ubuntu-latest
           - macOS-latest
@@ -49,9 +48,6 @@ jobs:
         extension:
           - "skip_cython"
           - "use_cython"
-        exclude:
-          - os: windows-latest
-            python-version: "3.12.0-beta.4"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -59,7 +55,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: snok/install-poetry@v1.3.3
+      - uses: snok/install-poetry@v1.3.4
       - name: Install Dependencies
         run: |
           if [ "${{ matrix.extension }}" = "skip_cython" ]; then
@@ -143,7 +139,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install cibuildwheel
-        run: python3 -m pip install cibuildwheel==2.14.1
+        run: python3 -m pip install cibuildwheel==2.15.0
 
       - name: Build wheels
         run: python3 -m cibuildwheel --output-dir wheelhouse
