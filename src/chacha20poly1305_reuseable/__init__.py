@@ -122,12 +122,15 @@ class ChaCha20Poly1305Reusable:
             )
             self._encrypt_ctx = encrypt_ctx
 
+        if len(data) > MAX_SIZE:
+            # This is OverflowError to match what cffi would raise
+            raise OverflowError("Data too long. Max 2**32 bytes")
+
         if associated_data is None:
             associated_data = b""
-
-        if len(data) > MAX_SIZE or len(associated_data) > MAX_SIZE:
+        elif len(associated_data) > MAX_SIZE:
             # This is OverflowError to match what cffi would raise
-            raise OverflowError("Data or associated data too long. Max 2**32 bytes")
+            raise OverflowError("Associated data too long. Max 2**32 bytes")
 
         _check_params(NONCE_LEN_UINT, nonce, data, associated_data)
         return _encrypt_with_fixed_nonce_len(
