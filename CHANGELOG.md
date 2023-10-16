@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.8.0 (2023-10-16)
+
+### Feature
+
+* Remove dynamic nonce check length ([#25](https://github.com/bdraco/chacha20poly1305-reuseable/issues/25)) ([`1985312`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/1985312760b1ccd88ff49fb64ae1ae1cb646766c))
+
 ## v0.7.0 (2023-10-16)
 
 ### Feature
