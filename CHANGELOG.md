@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.9.0 (2023-10-16)
+
+### Feature
+
+* Speed up openssl asserts ([#26](https://github.com/bdraco/chacha20poly1305-reuseable/issues/26)) ([`eb77852`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/eb778524082aa5008202498a6ac3bc131d192ac9))
+
 ## v0.8.0 (2023-10-16)
 
 ### Feature
