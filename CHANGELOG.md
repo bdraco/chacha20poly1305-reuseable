@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.5.0 (2023-10-16)
+
+### Feature
+
+* Build python 3.12 wheels ([#21](https://github.com/bdraco/chacha20poly1305-reuseable/issues/21)) ([`9e09492`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/9e09492c3c6f20dc4f477cb0bd6cbafd202edd75))
+
 ## v0.4.2 (2023-08-27)
 
 ### Fix
