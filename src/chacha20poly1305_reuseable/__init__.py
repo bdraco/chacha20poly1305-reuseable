@@ -47,17 +47,11 @@ _bytes = bytes
 _int = int
 
 
-def _check_params(
-    nonce: Union[_bytes, bytearray],
-    data: _bytes,
-    associated_data: _bytes,
-) -> None:
+def _check_params(nonce: Union[_bytes, bytearray], data: _bytes) -> None:
     if not isinstance(nonce, (bytes, bytearray)):
         raise TypeError("Nonce must be bytes or bytearray")
     if not isinstance(data, bytes):
         raise TypeError("data must be bytes")
-    if not isinstance(associated_data, bytes):
-        raise TypeError("associated_data must be bytes")
     if len(nonce) != NONCE_LEN_UINT:
         raise ValueError("Nonce must be 12 bytes")
 
@@ -127,11 +121,13 @@ class ChaCha20Poly1305Reusable:
 
         if associated_data is None:
             associated_data = b""
+        elif not isinstance(associated_data, bytes):
+            raise TypeError("associated_data must be bytes")
         elif len(associated_data) > MAX_SIZE:
             # This is OverflowError to match what cffi would raise
             raise OverflowError("Associated data too long. Max 2**32 bytes")
 
-        _check_params(nonce, data, associated_data)
+        _check_params(nonce, data)
         return _encrypt_with_fixed_nonce_len(
             encrypt_ctx,
             nonce,
@@ -157,8 +153,10 @@ class ChaCha20Poly1305Reusable:
 
         if associated_data is None:
             associated_data = b""
+        elif not isinstance(associated_data, bytes):
+            raise TypeError("associated_data must be bytes")
 
-        _check_params(nonce, data, associated_data)
+        _check_params(nonce, data)
         return _decrypt_with_fixed_nonce_len(
             decrypt_ctx,
             nonce,
@@ -258,7 +256,7 @@ def _encrypt_data(ctx: object, data: _bytes, associated_data: _bytes) -> bytes:
     res = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, TAG_LENGTH, tag_buf)
     openssl_assert(res != 0)
     tag = ffi_buffer(tag_buf)[:]
-    return processed_data + tag
+    return b"".join((processed_data, tag))
 
 
 def _decrypt_with_fixed_nonce_len(

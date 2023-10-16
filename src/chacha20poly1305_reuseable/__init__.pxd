@@ -2,9 +2,10 @@
 import cython
 
 
-cdef object _ENCRYPT
-cdef object _DECRYPT
+cdef cython.uint _ENCRYPT
+cdef cython.uint _DECRYPT
 
+cdef object backend
 cdef object lib
 cdef object ffi
 
@@ -30,13 +31,16 @@ cdef object ffi_from_buffer
 cdef object ffi_buffer
 
 cdef cython.long MAX_SIZE
-cdef object KEY_LEN
+cdef cython.uint KEY_LEN
 cdef object NONCE_LEN
 cdef cython.uint NONCE_LEN_UINT
 cdef object TAG_LENGTH
 cdef cython.uint TAG_LENGTH_UINT
 cdef object CIPHER_NAME
 cdef cython.int NEGATIVE_TAG_LENGTH_INT
+
+cdef object AEAD_CIPHER_SUPPORTED
+cdef object TEST_CIPHER
 
 cdef class ChaCha20Poly1305Reusable:
 
@@ -48,51 +52,48 @@ cdef class ChaCha20Poly1305Reusable:
 
     cpdef decrypt(self, object nonce, bytes data, object associated_data)
 
-cdef _check_params(
-    object nonce,
-    object data,
-    object associated_data
-)
+
+cdef _check_params(object nonce, bytes data)
 
 @cython.locals(res=cython.uint)
-cdef _set_nonce(object ctx, object nonce, object operation)
+cdef _set_nonce(object ctx, object nonce, cython.uint operation)
 
 @cython.locals(res=cython.uint)
-cdef _aead_setup_with_fixed_nonce_len(object cipher_name, object key, object nonce_len, object operation)
+cdef _aead_setup_with_fixed_nonce_len(object cipher_name, object key, object nonce_len, cython.uint operation)
 
 @cython.locals(res=cython.uint)
 cdef _process_aad(object ctx, object associated_data)
 
-@cython.locals(res=cython.uint)
-cdef _process_data(object ctx, object data)
+@cython.locals(res=cython.uint, data_len=object)
+cdef _process_data(object ctx, bytes data)
 
-cdef _encrypt_with_fixed_nonce_len(
+cdef bytes _encrypt_with_fixed_nonce_len(
     object ctx,
     object nonce,
-    object data,
+    bytes data,
     object associated_data,
 )
 
 cdef openssl_assert(bint ok)
 
 @cython.locals(res=cython.uint)
-cdef _encrypt_data(
+cdef bytes _encrypt_data(
     object ctx,
-    object data,
+    bytes data,
     object associated_data,
 )
 
 @cython.locals(res=cython.uint)
-cdef _decrypt_with_fixed_nonce_len(
+cdef bytes _decrypt_with_fixed_nonce_len(
     object ctx,
     object nonce,
-    object data,
+    bytes data,
     object associated_data,
 )
 
 @cython.locals(res=cython.uint)
-cdef _decrypt_data(
+cdef bytes _decrypt_data(
     object ctx,
-    object data,
+    bytes data,
     object associated_data
 )
