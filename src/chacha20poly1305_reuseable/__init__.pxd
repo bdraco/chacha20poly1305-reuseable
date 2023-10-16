@@ -53,7 +53,7 @@ cdef class ChaCha20Poly1305Reusable:
     cpdef decrypt(self, object nonce, bytes data, object associated_data)
 
 
-cdef _check_params(object nonce, bytes data, object associated_data)
+cdef _check_params(object nonce, bytes data)
 
 @cython.locals(res=cython.uint)
 cdef _set_nonce(object ctx, object nonce, cython.uint operation)
@@ -71,7 +71,7 @@ cdef bytes _encrypt_with_fixed_nonce_len(
     object ctx,
     object nonce,
     bytes data,
-    bytes associated_data,
+    object associated_data,
 )
 
 cdef openssl_assert(bint ok)
@@ -80,7 +80,7 @@ cdef openssl_assert(bint ok)
 cdef bytes _encrypt_data(
     object ctx,
     bytes data,
-    bytes associated_data,
+    object associated_data,
 )
 
 @cython.locals(res=cython.uint)
@@ -88,12 +88,12 @@ cdef bytes _decrypt_with_fixed_nonce_len(
     object ctx,
     object nonce,
     bytes data,
-    bytes associated_data,
+    object associated_data,
 )
 
 @cython.locals(res=cython.uint)
 cdef bytes _decrypt_data(
     object ctx,
-    object data,
+    bytes data,
     object associated_data
 )
