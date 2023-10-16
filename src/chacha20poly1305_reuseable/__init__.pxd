@@ -34,7 +34,9 @@ cdef object KEY_LEN
 cdef object NONCE_LEN
 cdef cython.uint NONCE_LEN_UINT
 cdef object TAG_LENGTH
+cdef cython.uint TAG_LENGTH_UINT
 cdef object CIPHER_NAME
+cdef cython.int NEGATIVE_TAG_LENGTH_INT
 
 cdef class ChaCha20Poly1305Reusable:
 
@@ -66,7 +68,6 @@ cdef _encrypt_with_fixed_nonce_len(
     object nonce,
     object data,
     object associated_data,
-    object tag_length,
 )
 
 cdef openssl_assert(object ok)
@@ -75,7 +76,6 @@ cdef _encrypt_data(
     object ctx,
     object data,
     object associated_data,
-    object tag_length
 )
 
 cdef _decrypt_with_fixed_nonce_len(
@@ -83,7 +83,6 @@ cdef _decrypt_with_fixed_nonce_len(
     object nonce,
     object data,
     object associated_data,
-    object tag_length
 )
 
 cdef _decrypt_data(
