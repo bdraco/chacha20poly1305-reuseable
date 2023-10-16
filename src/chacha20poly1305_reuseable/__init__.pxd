@@ -36,6 +36,16 @@ cdef cython.uint NONCE_LEN_UINT
 cdef object TAG_LENGTH
 cdef object CIPHER_NAME
 
+cdef class ChaCha20Poly1305Reusable:
+
+    cdef object _key
+    cdef object _encrypt_ctx
+    cdef object _decrypt_ctx
+
+    cpdef encrypt(self, object nonce, bytes data, object associated_data)
+
+    cpdef decrypt(self, object nonce, bytes data, object associated_data)
+
 cdef _check_params(
     cython.uint nonce_len,
     object nonce,

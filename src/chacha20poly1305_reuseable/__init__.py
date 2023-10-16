@@ -19,6 +19,8 @@ openssl_failure = partial(backend.openssl_assert, False)
 lib = backend._lib
 ffi = backend._ffi
 
+AEAD_CIPHER_SUPPORTED = backend.aead_cipher_supported
+
 EVP_CIPHER_CTX_ctrl = lib.EVP_CIPHER_CTX_ctrl
 EVP_CTRL_AEAD_SET_TAG = lib.EVP_CTRL_AEAD_SET_TAG
 EVP_CTRL_AEAD_SET_IVLEN = lib.EVP_CTRL_AEAD_SET_IVLEN
@@ -68,8 +70,10 @@ NONCE_LEN_UINT = NONCE_LEN
 TAG_LENGTH = 16
 CIPHER_NAME = b"chacha20-poly1305"
 
+TEST_CIPHER = ChaCha20Poly1305(b"\x00" * KEY_LEN)
 
-class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
+
+class ChaCha20Poly1305Reusable:
     """A reuseable version of ChaCha20Poly1305.
 
     This is modified version of ChaCha20Poly1305 that does not recreate
@@ -80,7 +84,7 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
     """
 
     def __init__(self, key: Union[_bytes, bytearray]) -> None:
-        if not backend.aead_cipher_supported(self):
+        if not AEAD_CIPHER_SUPPORTED(TEST_CIPHER):
             raise exceptions.UnsupportedAlgorithm(
                 "ChaCha20Poly1305Reusable is not supported by this version of OpenSSL",
                 exceptions._Reasons.UNSUPPORTED_CIPHER,
@@ -107,7 +111,7 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         associated_data: typing.Optional[bytes],
     ) -> bytes:
         encrypt_ctx = self._encrypt_ctx
-        if not encrypt_ctx:
+        if encrypt_ctx is None:
             encrypt_ctx = _aead_setup_with_fixed_nonce_len(
                 CIPHER_NAME,
                 self._key,
@@ -139,7 +143,7 @@ class ChaCha20Poly1305Reusable(ChaCha20Poly1305):
         associated_data: typing.Optional[_bytes],
     ) -> bytes:
         decrypt_ctx = self._decrypt_ctx
-        if not decrypt_ctx:
+        if decrypt_ctx is None:
             decrypt_ctx = _aead_setup_with_fixed_nonce_len(
                 CIPHER_NAME,
                 self._key,
