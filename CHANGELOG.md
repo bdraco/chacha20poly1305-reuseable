@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.6.0 (2023-10-16)
+
+### Feature
+
+* Cythonize ChaCha20Poly1305Reusable class to improve performance ([#22](https://github.com/bdraco/chacha20poly1305-reuseable/issues/22)) ([`8ae19ec`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/8ae19ec8e1af7d1446bcb6f8a5249df25ef966e8))
+
 ## v0.5.0 (2023-10-16)
 
 ### Feature
