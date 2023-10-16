@@ -258,7 +258,7 @@ def _encrypt_data(ctx: object, data: _bytes, associated_data: _bytes) -> bytes:
     res = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, TAG_LENGTH, tag_buf)
     openssl_assert(res != 0)
     tag = ffi_buffer(tag_buf)[:]
-    return processed_data + tag
+    return b"".join((processed_data, tag))
 
 
 def _decrypt_with_fixed_nonce_len(
