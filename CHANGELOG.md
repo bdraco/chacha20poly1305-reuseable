@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.0 (2023-10-16)
+
+### Feature
+
+* Performance improvements ([#20](https://github.com/bdraco/chacha20poly1305-reuseable/issues/20)) ([`5b863ed`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/5b863ed1e39a2b78673c53957ac44cb2f772b056))
+
 ## v0.9.0 (2023-10-16)
 
 ### Feature
