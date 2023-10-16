@@ -54,12 +54,16 @@ cdef _check_params(
     object associated_data
 )
 
+@cython.locals(res=cython.uint)
 cdef _set_nonce(object ctx, object nonce, object operation)
 
+@cython.locals(res=cython.uint)
 cdef _aead_setup_with_fixed_nonce_len(object cipher_name, object key, object nonce_len, object operation)
 
+@cython.locals(res=cython.uint)
 cdef _process_aad(object ctx, object associated_data)
 
+@cython.locals(res=cython.uint)
 cdef _process_data(object ctx, object data)
 
 cdef _encrypt_with_fixed_nonce_len(
@@ -69,14 +73,16 @@ cdef _encrypt_with_fixed_nonce_len(
     object associated_data,
 )
 
-cdef openssl_assert(object ok)
+cdef openssl_assert(bint ok)
 
+@cython.locals(res=cython.uint)
 cdef _encrypt_data(
     object ctx,
     object data,
     object associated_data,
 )
 
+@cython.locals(res=cython.uint)
 cdef _decrypt_with_fixed_nonce_len(
     object ctx,
     object nonce,
@@ -84,6 +90,7 @@ cdef _decrypt_with_fixed_nonce_len(
     object associated_data,
 )
 
+@cython.locals(res=cython.uint)
 cdef _decrypt_data(
     object ctx,
     object data,
