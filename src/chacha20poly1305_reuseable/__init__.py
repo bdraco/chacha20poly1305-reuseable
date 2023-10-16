@@ -68,6 +68,8 @@ KEY_LEN = 32
 NONCE_LEN = 12
 NONCE_LEN_UINT = NONCE_LEN
 TAG_LENGTH = 16
+TAG_LENGTH_UINT = TAG_LENGTH
+NEGATIVE_TAG_LENGTH_INT = -TAG_LENGTH_UINT
 CIPHER_NAME = b"chacha20-poly1305"
 
 TEST_CIPHER = ChaCha20Poly1305(b"\x00" * KEY_LEN)
@@ -133,7 +135,6 @@ class ChaCha20Poly1305Reusable:
             nonce,
             data,
             associated_data,
-            TAG_LENGTH,
         )
 
     def decrypt(
@@ -161,7 +162,6 @@ class ChaCha20Poly1305Reusable:
             nonce,
             data,
             associated_data,
-            TAG_LENGTH,
         )
 
 
@@ -240,23 +240,20 @@ def _encrypt_with_fixed_nonce_len(
     nonce: Union[_bytes, bytearray],
     data: _bytes,
     associated_data: _bytes,
-    tag_length: _int,
 ) -> bytes:
     _set_nonce(ctx, nonce, _ENCRYPT)
-    return _encrypt_data(ctx, data, associated_data, tag_length)
+    return _encrypt_data(ctx, data, associated_data)
 
 
-def _encrypt_data(
-    ctx: object, data: _bytes, associated_data: _bytes, tag_length: _int
-) -> bytes:
+def _encrypt_data(ctx: object, data: _bytes, associated_data: _bytes) -> bytes:
     _process_aad(ctx, associated_data)
     processed_data = _process_data(ctx, data)
     outlen = ffi_new("int *")
     res = EVP_CipherFinal_ex(ctx, NULL, outlen)
     openssl_assert(res != 0)
     openssl_assert(outlen[0] == 0)
-    tag_buf = ffi_new("unsigned char[]", tag_length)
-    res = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, tag_length, tag_buf)
+    tag_buf = ffi_new("unsigned char[]", TAG_LENGTH)
+    res = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, TAG_LENGTH, tag_buf)
     openssl_assert(res != 0)
     tag = ffi_buffer(tag_buf)[:]
     return processed_data + tag
@@ -267,16 +264,14 @@ def _decrypt_with_fixed_nonce_len(
     nonce: Union[_bytes, bytearray],
     data: _bytes,
     associated_data: _bytes,
-    tag_length: _int,
 ) -> bytes:
-    if len(data) < tag_length:
+    if len(data) < TAG_LENGTH_UINT:
         raise InvalidTag
-    negative_tag_length = -tag_length
-    tag = data[negative_tag_length:]
-    data = data[:negative_tag_length]
+    tag = data[NEGATIVE_TAG_LENGTH_INT:]
+    data = data[:NEGATIVE_TAG_LENGTH_INT]
     _set_nonce(ctx, nonce, _DECRYPT)
     # set the decrypted tag
-    res = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, tag_length, tag)
+    res = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, TAG_LENGTH, tag)
     openssl_assert(res != 0)
     return _decrypt_data(ctx, data, associated_data)
 
