@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.7.0 (2023-10-16)
+
+### Feature
+
+* Speed up max length check ([#24](https://github.com/bdraco/chacha20poly1305-reuseable/issues/24)) ([`38c99e2`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/38c99e2ea059b9b611b669bbbf33e8a3832eebb1))
+* Remove dynamic tag length checks ([#23](https://github.com/bdraco/chacha20poly1305-reuseable/issues/23)) ([`6ba6ac7`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/6ba6ac7c7f787283f668f99e33c825ec73d8f960))
+
 ## v0.6.0 (2023-10-16)
 
 ### Feature
