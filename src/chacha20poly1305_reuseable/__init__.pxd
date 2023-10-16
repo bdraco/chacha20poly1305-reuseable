@@ -49,7 +49,6 @@ cdef class ChaCha20Poly1305Reusable:
     cpdef decrypt(self, object nonce, bytes data, object associated_data)
 
 cdef _check_params(
-    cython.uint nonce_len,
     object nonce,
     object data,
     object associated_data

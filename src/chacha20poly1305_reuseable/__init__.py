@@ -48,7 +48,6 @@ _int = int
 
 
 def _check_params(
-    nonce_len: _int,
     nonce: Union[_bytes, bytearray],
     data: _bytes,
     associated_data: _bytes,
@@ -59,7 +58,7 @@ def _check_params(
         raise TypeError("data must be bytes")
     if not isinstance(associated_data, bytes):
         raise TypeError("associated_data must be bytes")
-    if len(nonce) != nonce_len:
+    if len(nonce) != NONCE_LEN_UINT:
         raise ValueError("Nonce must be 12 bytes")
 
 
@@ -132,7 +131,7 @@ class ChaCha20Poly1305Reusable:
             # This is OverflowError to match what cffi would raise
             raise OverflowError("Associated data too long. Max 2**32 bytes")
 
-        _check_params(NONCE_LEN_UINT, nonce, data, associated_data)
+        _check_params(nonce, data, associated_data)
         return _encrypt_with_fixed_nonce_len(
             encrypt_ctx,
             nonce,
@@ -159,7 +158,7 @@ class ChaCha20Poly1305Reusable:
         if associated_data is None:
             associated_data = b""
 
-        _check_params(NONCE_LEN_UINT, nonce, data, associated_data)
+        _check_params(nonce, data, associated_data)
         return _decrypt_with_fixed_nonce_len(
             decrypt_ctx,
             nonce,
