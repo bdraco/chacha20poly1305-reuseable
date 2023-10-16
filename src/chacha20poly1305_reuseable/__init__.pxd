@@ -82,6 +82,7 @@ cdef _encrypt_data(
     object associated_data,
 )
 
+@cython.locals(res=cython.uint)
 cdef _decrypt_with_fixed_nonce_len(
     object ctx,
     object nonce,
