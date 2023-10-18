@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.1 (2023-10-18)
+
+### Fix
+
+* Reduce size of wheels by excluding generated .c files ([#27](https://github.com/bdraco/chacha20poly1305-reuseable/issues/27)) ([`ce54e5b`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/ce54e5b8eeeb513c826450ae33484d0f8f793dc1))
+
 ## v0.10.0 (2023-10-16)
 
 ### Feature
