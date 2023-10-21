@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.2 (2023-10-21)
+
+### Fix
+
+* Remove cython type for MAX_SIZE ([#28](https://github.com/bdraco/chacha20poly1305-reuseable/issues/28)) ([`fb1a49a`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/fb1a49ad54b9d059d570b2482ab364aa19f631a1))
+
 ## v0.10.1 (2023-10-18)
 
 ### Fix
