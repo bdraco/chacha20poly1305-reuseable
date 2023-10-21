@@ -30,7 +30,7 @@ cdef object ffi_new
 cdef object ffi_from_buffer
 cdef object ffi_buffer
 
-cdef cython.long MAX_SIZE
+cdef object MAX_SIZE
 cdef cython.uint KEY_LEN
 cdef object NONCE_LEN
 cdef cython.uint NONCE_LEN_UINT
