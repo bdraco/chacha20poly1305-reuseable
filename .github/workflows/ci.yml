@@ -88,6 +88,7 @@ jobs:
         shell: alpine.sh --root {0}
       - name: Install Dependencies
         run: |
+          poetry add Cython
           REQUIRE_CYTHON=1 poetry -vvv install --only=main,dev
         shell: alpine.sh --root {0}
       - name: Test with Pytest
