@@ -43,7 +43,7 @@ jobs:
           branch: v3.18
       - name: Set up Python
         run: |
-          apk add python3-dev gcc musl-dev linux-headers poetry cargo
+          apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo pkgconfig poetry
         shell: alpine.sh --root {0}
       - name: Install Dependencies
         run: |
