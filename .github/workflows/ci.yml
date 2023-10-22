@@ -79,8 +79,8 @@ jobs:
       - name: Setup Alpine Linux v3.15 for aarch64
         uses: jirutka/setup-alpine@v1
         with:
-        arch: x86
-        branch: v3.18
+          arch: x86
+          branch: v3.18
       - name: Set up Python
         run: |
           apk add python3-dev gcc musl-dev linux-headers poetry
