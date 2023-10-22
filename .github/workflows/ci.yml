@@ -88,7 +88,7 @@ jobs:
         shell: alpine.sh --root {0}
       - name: Install Dependencies
         run: |
-          REQUIRE_CYTHON=1 poetry install --only=main,dev
+          REQUIRE_CYTHON=1 poetry -vvv install --only=main,dev
         shell: alpine.sh --root {0}
       - name: Test with Pytest
         run: poetry run pytest --cov-report=xml
