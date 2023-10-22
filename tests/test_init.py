@@ -6,22 +6,18 @@ from cryptography.exceptions import InvalidTag
 from chacha20poly1305_reuseable import ChaCha20Poly1305Reusable
 
 
-class FakeData(bytes):
-    def __len__(self):
-        return 2**32 + 1
-
-
 class TestChaCha20Poly1305Reusable:
     def test_data_too_large(self):
         key = ChaCha20Poly1305Reusable.generate_key()
         chacha = ChaCha20Poly1305Reusable(key)
         nonce = b"0" * 12
+        fake_data = b"0" * (2**32 + 1)
 
         with pytest.raises(OverflowError):
-            chacha.encrypt(nonce, FakeData(), b"")
+            chacha.encrypt(nonce, fake_data, b"")
 
         with pytest.raises(OverflowError):
-            chacha.encrypt(nonce, b"", FakeData())
+            chacha.encrypt(nonce, b"", fake_data)
 
     def test_generate_key(self):
         key = ChaCha20Poly1305Reusable.generate_key()
