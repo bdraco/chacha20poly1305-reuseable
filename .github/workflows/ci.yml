@@ -32,6 +32,7 @@ jobs:
       - uses: wagoid/commitlint-github-action@v5.3.1
 
   test32bit:
+    name: "Test on 32-bit Alpine Linux"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
