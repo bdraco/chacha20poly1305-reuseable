@@ -88,11 +88,7 @@ jobs:
         shell: alpine.sh --root {0}
       - name: Install Dependencies
         run: |
-          if [ "${{ matrix.extension }}" = "skip_cython" ]; then
-            SKIP_CYTHON=1 poetry install --only=main,dev
-          else
-            poetry install --only=main,dev
-          fi
+          REQUIRE_CYTHON=1 poetry install --only=main,dev
         shell: alpine.sh --root {0}
       - name: Test with Pytest
         run: poetry run pytest --cov-report=xml
