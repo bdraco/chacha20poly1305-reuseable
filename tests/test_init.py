@@ -1,4 +1,5 @@
 import os
+import sys
 
 import pytest
 from cryptography.exceptions import InvalidTag
@@ -7,6 +8,7 @@ from chacha20poly1305_reuseable import ChaCha20Poly1305Reusable
 
 
 class TestChaCha20Poly1305Reusable:
+    @pytest.mark.skipif(sys.maxsize <= 2**32, reason="requires 64bit system")
     def test_data_too_large(self):
         key = ChaCha20Poly1305Reusable.generate_key()
         chacha = ChaCha20Poly1305Reusable(key)
