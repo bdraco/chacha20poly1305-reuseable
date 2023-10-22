@@ -88,6 +88,7 @@ jobs:
         shell: alpine.sh --root {0}
       - name: Install Dependencies
         run: |
+          pip3 install --upgrade 'Cython>3.0'
           REQUIRE_CYTHON=1 poetry -vvv install --only=main,dev
         shell: alpine.sh --root {0}
       - name: Test with Pytest
