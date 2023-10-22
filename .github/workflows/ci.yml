@@ -103,6 +103,7 @@ jobs:
     environment: release
     if: github.ref == 'refs/heads/main'
     needs:
+      - test
       - test32bit
       - lint
       - commitlint
