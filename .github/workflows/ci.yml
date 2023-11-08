@@ -162,6 +162,12 @@ jobs:
           ref: "v${{ steps.release_tag.outputs.newest_release_tag }}"
           fetch-depth: 0
 
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: arm64
+
       - name: Install cibuildwheel
         run: python3 -m pip install cibuildwheel==2.16.2
 
@@ -171,6 +177,7 @@ jobs:
         env:
           CIBW_SKIP: cp36-* pp36-* cp37-* pp37-*
           CIBW_BEFORE_ALL_LINUX: apt-get install -y gcc || yum install -y gcc || apk add gcc
+          CIBW_ARCHS_LINUX: auto aarch64
           CIBW_BUILD_VERBOSITY: 3
           REQUIRE_CYTHON: 1
 
