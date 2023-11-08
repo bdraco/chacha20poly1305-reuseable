@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.0 (2023-11-08)
+
+### Feature
+
+* Build aarch64 wheels ([#31](https://github.com/bdraco/chacha20poly1305-reuseable/issues/31)) ([`d8cc70d`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/d8cc70d4378b9cff137a336cc4e154346c3cbb39))
+
 ## v0.10.2 (2023-10-21)
 
 ### Fix
