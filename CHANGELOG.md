@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.0 (2023-12-05)
+
+### Feature
+
+* Small speed ups to decrypt ([#33](https://github.com/bdraco/chacha20poly1305-reuseable/issues/33)) ([`7a93c6e`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/7a93c6e85bea95ebc17433e311e0e9156944ce45))
+
 ## v0.11.0 (2023-11-08)
 
 ### Feature
