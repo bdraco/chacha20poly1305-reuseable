@@ -105,15 +105,13 @@ class ChaCha20Poly1305Reusable:
         data: _bytes,
         associated_data: typing.Optional[bytes],
     ) -> bytes:
-        encrypt_ctx = self._encrypt_ctx
-        if encrypt_ctx is None:
-            encrypt_ctx = _aead_setup_with_fixed_nonce_len(
+        if self._encrypt_ctx is None:
+            self._encrypt_ctx = _aead_setup_with_fixed_nonce_len(
                 CIPHER_NAME,
                 self._key,
                 NONCE_LEN,
                 _ENCRYPT,
             )
-            self._encrypt_ctx = encrypt_ctx
 
         if len(data) > MAX_SIZE:
             # This is OverflowError to match what cffi would raise
@@ -129,7 +127,7 @@ class ChaCha20Poly1305Reusable:
 
         _check_params(nonce, data)
         return _encrypt_with_fixed_nonce_len(
-            encrypt_ctx,
+            self._encrypt_ctx,
             nonce,
             data,
             associated_data,
@@ -141,15 +139,13 @@ class ChaCha20Poly1305Reusable:
         data: _bytes,
         associated_data: typing.Optional[_bytes],
     ) -> bytes:
-        decrypt_ctx = self._decrypt_ctx
-        if decrypt_ctx is None:
-            decrypt_ctx = _aead_setup_with_fixed_nonce_len(
+        if self._decrypt_ctx is None:
+            self._decrypt_ctx = _aead_setup_with_fixed_nonce_len(
                 CIPHER_NAME,
                 self._key,
                 NONCE_LEN,
                 _DECRYPT,
             )
-            self._decrypt_ctx = decrypt_ctx
 
         if associated_data is None:
             associated_data = b""
@@ -158,7 +154,7 @@ class ChaCha20Poly1305Reusable:
 
         _check_params(nonce, data)
         return _decrypt_with_fixed_nonce_len(
-            decrypt_ctx,
+            self._decrypt_ctx,
             nonce,
             data,
             associated_data,
