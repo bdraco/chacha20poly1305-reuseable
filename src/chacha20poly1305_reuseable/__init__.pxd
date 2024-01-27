@@ -39,7 +39,6 @@ cdef cython.uint TAG_LENGTH_UINT
 cdef object CIPHER_NAME
 cdef cython.int NEGATIVE_TAG_LENGTH_INT
 
-cdef object AEAD_CIPHER_SUPPORTED
 cdef object TEST_CIPHER
 
 cdef class ChaCha20Poly1305Reusable:

@@ -10,7 +10,6 @@ import typing
 from functools import partial
 from typing import Optional, Union
 
-from cryptography import exceptions
 from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.backends.openssl.backend import backend
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
@@ -18,8 +17,6 @@ from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 openssl_failure = partial(backend.openssl_assert, False)
 lib = backend._lib
 ffi = backend._ffi
-
-AEAD_CIPHER_SUPPORTED = backend.aead_cipher_supported
 
 EVP_CIPHER_CTX_ctrl = lib.EVP_CIPHER_CTX_ctrl
 EVP_CTRL_AEAD_SET_TAG = lib.EVP_CTRL_AEAD_SET_TAG
@@ -79,12 +76,6 @@ class ChaCha20Poly1305Reusable:
     """
 
     def __init__(self, key: Union[_bytes, bytearray]) -> None:
-        if not AEAD_CIPHER_SUPPORTED(TEST_CIPHER):
-            raise exceptions.UnsupportedAlgorithm(
-                "ChaCha20Poly1305Reusable is not supported by this version of OpenSSL",
-                exceptions._Reasons.UNSUPPORTED_CIPHER,
-            )
-
         if not isinstance(key, (bytes, bytearray)):
             raise TypeError("key must be bytes or bytearay")
 
