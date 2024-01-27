@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.1 (2024-01-27)
+
+### Fix
+
+* Remove cipher check to fix compat with cryptography 42 ([#35](https://github.com/bdraco/chacha20poly1305-reuseable/issues/35)) ([`afd8961`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/afd89610db349e004fbda076703a1459c80b10b0))
+
 ## v0.12.0 (2023-12-05)
 
 ### Feature
