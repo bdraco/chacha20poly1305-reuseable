@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.2 (2024-07-15)
+
+### Fix
+
+* License classifier ([#37](https://github.com/bdraco/chacha20poly1305-reuseable/issues/37)) ([`42bc54a`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/42bc54a3f9850b0481c21868576e033a617b49cb))
+
 ## v0.12.1 (2024-01-27)
 
 ### Fix
