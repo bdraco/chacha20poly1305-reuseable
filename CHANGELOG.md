@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.13.1 (2024-07-21)
+
+### Fix
+
+* Remove cython from ci ([#39](https://github.com/bdraco/chacha20poly1305-reuseable/issues/39)) ([`3e82ef4`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/3e82ef49a4569e46d749ade703fa6a4385142983))
+
 ## v0.13.0 (2024-07-21)
 
 ### Feature
