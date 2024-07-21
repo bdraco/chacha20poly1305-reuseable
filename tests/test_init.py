@@ -27,7 +27,7 @@ class TestChaCha20Poly1305Reusable:
 
     def test_bad_key(self):
         with pytest.raises(TypeError):
-            ChaCha20Poly1305Reusable(object())  # type:ignore[arg-type]
+            ChaCha20Poly1305Reusable(object())
 
         with pytest.raises(ValueError):
             ChaCha20Poly1305Reusable(b"0" * 31)
