@@ -43,11 +43,6 @@ jobs:
           - "3.12"
         os:
           - ubuntu-latest
-          - macOS-latest
-          - windows-latest
-        extension:
-          - "skip_cython"
-          - "use_cython"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -58,11 +53,7 @@ jobs:
       - uses: snok/install-poetry@v1.3.4
       - name: Install Dependencies
         run: |
-          if [ "${{ matrix.extension }}" = "skip_cython" ]; then
-            SKIP_CYTHON=1 poetry install --only=main,dev
-          else
-            REQUIRE_CYTHON=1 poetry install --only=main,dev
-          fi
+          poetry install --only=main,dev
         shell: bash
       - name: Test with Pytest
         run: poetry run pytest --cov-report=xml
@@ -72,36 +63,12 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  test32bit:
-    name: "Test on 32-bit Alpine Linux"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Alpine Linux v3.18 for x86
-        uses: jirutka/setup-alpine@v1
-        with:
-          arch: x86
-          branch: v3.18
-      - name: Set up Python
-        run: |
-          apk add gcc musl-dev python3-dev py3-pip libffi-dev openssl-dev cargo pkgconfig poetry
-        shell: alpine.sh --root {0}
-      - name: Install Dependencies
-        run: |
-          poetry add Cython
-          REQUIRE_CYTHON=1 poetry -vvv install --only=main,dev
-        shell: alpine.sh --root {0}
-      - name: Test with Pytest
-        run: poetry run pytest --cov-report=xml
-        shell: alpine.sh --root  {0}
-
   release:
     runs-on: ubuntu-latest
     environment: release
     if: github.ref == 'refs/heads/main'
     needs:
       - test
-      - test32bit
       - lint
       - commitlint
 
@@ -122,71 +89,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pypi_token: ${{ secrets.PYPI_TOKEN }}
 
-  build_wheels:
-    needs: [release]
-
-    name: Build wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - macos-11
-          - ubuntu-20.04
-          - windows-2019
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: "main"
-
-      # Used to host cibuildwheel
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install python-semantic-release
-        run: python3 -m pip install --upgrade python-semantic-release==7.34.6 requests
-
-      - name: Get Release Tag
-        id: release_tag
-        env:
-          PYTHONUTF8: 1
-        shell: bash
-        run: |
-          echo "::set-output name=newest_release_tag::$(semantic-release print-version --current)"
-
-      - uses: actions/checkout@v3
-        with:
-          ref: "v${{ steps.release_tag.outputs.newest_release_tag }}"
-          fetch-depth: 0
-
-      - name: Set up QEMU
-        if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
-
-      - name: Install cibuildwheel
-        run: python3 -m pip install cibuildwheel==2.16.2
-
-      - name: Build wheels
-        run: python3 -m cibuildwheel --output-dir wheelhouse
-        # to supply options, put them in 'env', like:
-        env:
-          CIBW_SKIP: cp36-* pp36-* cp37-* pp37-*
-          CIBW_BEFORE_ALL_LINUX: apt-get install -y gcc || yum install -y gcc || apk add gcc
-          CIBW_ARCHS_LINUX: auto aarch64
-          CIBW_BUILD_VERBOSITY: 3
-          REQUIRE_CYTHON: 1
-
-      - uses: actions/upload-artifact@v3
-        with:
-          path: ./wheelhouse/*.whl
-
   upload_pypi:
-    needs: [build_wheels]
+    needs: [release]
     runs-on: ubuntu-latest
     environment: release
 
