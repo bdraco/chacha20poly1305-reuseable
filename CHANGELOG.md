@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v0.13.0 (2024-07-21)
+
+### Feature
+
+* Switch to built-in cryptography implementation ([#38](https://github.com/bdraco/chacha20poly1305-reuseable/issues/38)) ([`d074fb2`](https://github.com/bdraco/chacha20poly1305-reuseable/commit/d074fb203372b6637d690e2ee099a73f5f9e1040))
+
 ## v0.12.2 (2024-07-15)
 
 ### Fix
