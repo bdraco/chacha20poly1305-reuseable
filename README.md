@@ -27,7 +27,7 @@
   <img src="https://img.shields.io/pypi/l/chacha20poly1305-reuseable.svg?style=flat-square" alt="License">
 </p>
 
-ChaCha20Poly1305 that is reuseable for asyncio
+ChaCha20Poly1305 that is reuseable for asyncio. cryptography has switched to a rust based implementation for chacha20poly1305 in later versions which makes this library obsolete, and should not be used in new projects.
 
 ## Installation
 
